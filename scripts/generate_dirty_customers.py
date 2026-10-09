@@ -36,5 +36,6 @@ df.loc[bad_state, "state"] = [random.choice(["XX", "Texas", "T", "ZZ", "99"]) fo
 df.loc[dup, "customer_id"] = [random.randint(1, N) for _ in dup]
 
 out = Path(__file__).resolve().parents[1] / "data" / "customer.csv"
+out.parent.mkdir(exist_ok=True)
 df.to_csv(out, index=False)
 print(f"Wrote {out} ({len(df)} rows)")

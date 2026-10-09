@@ -1,14 +1,12 @@
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-import pandas as pd
+from helpers import *
 from app.tools.sql_guard import classify_sql
-from app.tools.dq_checks import run_dq_checks
-from app.tools.profiling import check_nulls, check_duplicates
+from app.tools import profiling
+
 
 def test_guard_allows_select():
     assert classify_sql("SELECT * FROM customers WHERE state = 'TX'")["allowed"]
     assert classify_sql("WITH t AS (SELECT 1) SELECT * FROM t;")["allowed"]
+
 
 def test_guard_blocks_writes_and_tricks():
     for sql in ["DELETE FROM customers", "SELECT 1; DROP TABLE customers",
@@ -16,15 +14,15 @@ def test_guard_blocks_writes_and_tricks():
                 "/* hi */ DROP TABLE x"]:
         assert not classify_sql(sql)["allowed"], sql
 
+
 def test_guard_ignores_keywords_in_strings():
     assert classify_sql("SELECT * FROM t WHERE note = 'please delete; later'")["allowed"]
 
-def test_injected_defects_are_found():
-    df = pd.read_csv(Path(__file__).resolve().parents[1] / "data" / "customer.csv")
-    found = {i["check"]: i["count"] for i in run_dq_checks(df)}
-    assert found["null_email"] == 340
-    assert found["invalid_date"] == 53
-    assert found["invalid_state_code"] == 25
-    assert 100 <= found["duplicate_key"] <= 120  # random collisions can merge a few
-    assert check_nulls(df)["email"] == 340
-    assert check_duplicates(df, "customer_id")["duplicate_rows"] == found["duplicate_key"]
+
+def test_profiling_is_generic():
+    p = profiling.profile_table(TITANIC)
+    assert p["row_count"] == 891 and p["column_count"] == 12
+    assert {c["name"]: c["nulls"] for c in p["columns"] if c["nulls"]} == {"Age": 177, "Cabin": 687, "Embarked": 2}
+    assert profiling.check_nulls(CUSTOMER) == {"email": 340}
+    assert profiling.check_duplicates(CUSTOMER, "customer_id")["duplicate_rows"] == 119
+    assert "error" in profiling.check_duplicates(CUSTOMER, "nope")

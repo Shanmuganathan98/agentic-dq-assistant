@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    environment: {POSTGRES_USER: dq, POSTGRES_PASSWORD: dq, POSTGRES_DB: dq}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dq"]
+      interval: 5s
+      retries: 10
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://dq:dq@db:5432/dq
+      RUNS_DIR: /app/data/runs
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      API_KEY: ${API_KEY:-}
+    volumes: ["runs:/app/data/runs"]
+    ports: ["8000:8000"]
+    depends_on: {db: {condition: service_healthy}}
+  ui:
+    build: {context: ., dockerfile: Dockerfile.ui}
+    environment:
+      API_URL: http://api:8000
+      API_KEY: ${API_KEY:-}
+    ports: ["8501:8501"]
+    depends_on: [api]
+volumes: {pgdata: {}, runs: {}}

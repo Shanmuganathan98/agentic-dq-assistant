@@ -1,0 +1,12 @@
+[
+  {"type": "unique", "column": "PassengerId", "severity": "high", "action": "ask"},
+  {"type": "allowed_values", "column": "Survived", "values": [0, 1], "severity": "high", "action": "flag"},
+  {"type": "allowed_values", "column": "Pclass", "values": [1, 2, 3], "severity": "high", "action": "flag"},
+  {"type": "allowed_values", "column": "Sex", "values": ["male", "female"], "severity": "medium", "action": "fix"},
+  {"type": "allowed_values", "column": "Embarked", "values": ["S", "C", "Q"], "severity": "medium", "action": "fix"},
+  {"type": "range", "column": "Age", "min": 0, "max": 120, "severity": "medium", "action": "fix"},
+  {"type": "range", "column": "Fare", "min": 0, "severity": "medium", "action": "fix"},
+  {"type": "not_null", "column": "Age", "severity": "medium", "action": "fix", "fill_with": "median"},
+  {"type": "not_null", "column": "Embarked", "severity": "low", "action": "fix", "fill_with": "mode"},
+  {"type": "not_null", "column": "Cabin", "severity": "low", "action": "flag"}
+]

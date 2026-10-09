@@ -6,7 +6,7 @@ class NoArgs(BaseModel):
 
 
 class KeyArgs(BaseModel):
-    key: str = Field(default="customer_id", description="Column that should uniquely identify a row")
+    key: str = Field(description="Column to check for duplicate values")
 
 
 class Finding(BaseModel):

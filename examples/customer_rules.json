@@ -1,0 +1,9 @@
+[
+  {"type": "unique", "column": "customer_id", "severity": "high", "action": "ask"},
+  {"type": "not_null", "column": "email", "severity": "medium", "action": "ask"},
+  {"type": "regex", "column": "email", "pattern": "[^@\\s]+@[^@\\s]+\\.[^@\\s]+", "severity": "medium", "action": "ask"},
+  {"type": "date_format", "column": "signup_date", "format": "%Y-%m-%d", "severity": "medium", "action": "fix"},
+  {"type": "allowed_values", "column": "state", "severity": "low", "action": "fix",
+   "values": ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"],
+   "synonyms": {"Texas": "TX", "California": "CA", "New York": "NY", "Florida": "FL"}}
+]

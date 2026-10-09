@@ -3,5 +3,7 @@ uvicorn[standard]>=0.30
 pydantic>=2.7
 pandas>=2.2
 python-multipart>=0.0.9
+openpyxl>=3.1
 anthropic>=0.40
-pytest>=8.0
+psycopg[binary]>=3.1
+# optional: pip install langgraph   (enables --engine langgraph)
