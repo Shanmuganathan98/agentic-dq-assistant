@@ -83,13 +83,3 @@ Environment (see `.env.example`): `ANTHROPIC_API_KEY` (optional), `DATABASE_URL`
 3. Request approval, choose `fill_median` for Age, approve. Show the verified load.
 4. SQL explorer: `SELECT embarked, AVG(age) FROM titanic GROUP BY embarked` works; `DELETE FROM titanic` is blocked.
 5. Upload a different file (`customer.csv` with `examples/customer_rules.json`): same system, different checks.
-
-## Honest limitations
-- Types are inferred by pandas when the file is read (for example `02134` in a CSV becomes `2134`). Rules that must
-  see the original text (leading zeros, exact formats) are best applied to text columns.
-- Checks are per-column or composite-key. Cross-column and cross-table rules (for example "end date after start
-  date", reference tables) are not built in yet.
-- The LangGraph engine, PostgreSQL path, Docker files and CI workflow are written but were not executed in the
-  build sandbox (no network). The Streamlit UI and the HTTP layer were not run there either. See `DEPLOY.md`.
-- SQLite does not roll back `CREATE TABLE` with the rest of a failed load (PostgreSQL does), so a failed first load
-  can leave an empty table behind.
